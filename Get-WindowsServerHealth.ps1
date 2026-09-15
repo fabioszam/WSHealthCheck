@@ -18,6 +18,13 @@ function Get-WindowsServerHealth {
     $FreeSpacePercentage = ($Disk.FreeSpace / $Disk.Size) * 100
     $DiskStatus = if ($FreeSpacePercentage -ge 20) {"OK"} else {"WARNING"}
 
+    # Query the target computer for the status of the RpcSs and EventLog services.
+    $Services = Invoke-Command -ComputerName $ComputerName -ScriptBlock {
+                     Get-Service -Name RpcSs, EventLog
+    }
+    $ServiceEventLog = $Services.Where({ $_.Name -eq 'EventLog' })
+    $ServiceRpcSs = $Services.Where({ $_.Name -eq 'RpcSs' })
+
     # Build a custom object so the output can be piped, formatted or exported.
     $ReturnedObject = [PSCustomObject]@{
         ComputerName = $ComputerName
@@ -26,6 +33,8 @@ function Get-WindowsServerHealth {
         Uptime = $Uptime
         DiskFreeSpacePercentage = $FreeSpacePercentage
         DiskStatus = $DiskStatus
+        EventLog = if ($ServiceEventLog.Status -eq 'Running') {"OK"} else {"WARNING"}
+        RpcSs = if ($ServiceRpcSs.Status -eq 'Running') {"OK"} else {"WARNING"}
     }
 
     return $ReturnedObject
