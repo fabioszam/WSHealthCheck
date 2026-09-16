@@ -89,19 +89,19 @@ The target server must allow the required remote connections. In non-domain envi
 
 ## How to Run
 
-Load the script into the current PowerShell session:
+Load the function into the current PowerShell session:
 
 ```powershell
 . .\Get-WindowsServerHealth.ps1
 ```
 
-Run the health check:
+Run the health check against the target server:
 
 ```powershell
 Get-WindowsServerHealth -ComputerName PS-SERVER
 ```
 
-The command returns a PowerShell object that can be further filtered, formatted, or exported.
+The command returns a PowerShell object with the health check results.
 
 ## What I Practiced
 
