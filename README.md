@@ -16,7 +16,7 @@ The goal is to provide a quick first-level check that can help identify conditio
 
 ## Demo
 
-The following demo shows WSHealthCheck running a health check on a Windows Server.
+The demo shows two scenarios: a healthy server and a server with a warning condition.
 
 ![WSHealthCheck Demo](assets/wshealthcheck-demo.gif)
 
@@ -49,9 +49,9 @@ The current version checks:
 ```text
 ComputerName            : PS-SERVER
 OperatingSystem         : Microsoft Windows Server 2025 Standard Evaluation
-BootTime                : 15/09/2026 11:04:48
-Uptime                  : 17:00:56
-DiskFreeSpacePercentage : 57.60
+BootTime                : 15/09/2026 11:06:31
+Uptime                  : 22:38:11
+DiskFreeSpacePercentage : 57.80
 DiskStatus              : OK
 EventLog                : OK
 RpcSs                   : OK
@@ -73,17 +73,19 @@ The project was developed and tested in a Windows Server lab using PowerShell Re
 
 ## How It Works
 
-The script receives the target computer through the `-ComputerName` parameter.
+The script uses the `-ComputerName` parameter to define the target server.
+
+When no computer name is provided, the script checks the local computer.
 
 System and disk information are collected using CIM.
 
-Service status is checked on the target computer using PowerShell Remoting with `Invoke-Command`.
+When checking a remote server, service status is collected using PowerShell Remoting with `Invoke-Command`.
 
 The individual check results are then used to calculate the overall health status.
 
 ## Remote Access
 
-The health check uses CIM and PowerShell Remoting (WinRM) to collect information from the target Windows Server.
+When checking a remote server, WSHealthCheck uses CIM and PowerShell Remoting (WinRM).
 
 The target server must allow the required remote connections. In non-domain environments, additional authentication or WinRM configuration may be required.
 
@@ -95,7 +97,13 @@ Load the function into the current PowerShell session:
 . .\Get-WindowsServerHealth.ps1
 ```
 
-Run the health check against the target server:
+Run a local health check:
+
+```powershell
+Get-WindowsServerHealth
+```
+
+Run a health check against a remote server:
 
 ```powershell
 Get-WindowsServerHealth -ComputerName PS-SERVER
@@ -109,17 +117,19 @@ This project was built as a hands-on study of PowerShell applied to Windows Serv
 
 Main topics practiced:
 
-* Advanced functions
-* Parameters
+* Advanced functions and parameters
+* Comment-based help and `Get-Help`
 * Objects and `PSCustomObject`
-* PowerShell pipeline
-* CIM
-* PowerShell Remoting
-* Conditional logic
+* PowerShell pipeline and object filtering
+* CIM for system and disk information
+* PowerShell Remoting with `Invoke-Command`
+* Local and remote execution
+* Error handling with `try/catch` and `-ErrorAction Stop`
+* Conditional logic and health status rules
 * `TimeSpan` and date calculations
-* Remote service checks
-* Git and GitHub
-* Version control and incremental development
+* Remote service checks with `Get-Service`
+* Git, GitHub, and version control
+* Incremental development and release management
 
 ## Current Limitations
 
